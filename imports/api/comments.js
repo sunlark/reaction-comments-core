@@ -3,63 +3,68 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactionCore } from "meteor/reactioncommerce:core";
 
-class CommentsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    doc.createdAt = doc.createdAt || new Date();
-    return super.insert(doc, callback);
-  }
-}
-
-export const Comments = new CommentsCollection('Comments');
+ReactionCore.Collections.Comments = new Mongo.Collection('Comments');
 
 // Deny all client-side updates since we will be using methods to manage this collection
-// todo is it modern way?
-Comments.deny({
+// todo is it a modern way?
+
+ReactionCore.Collections.Comments.deny({
   insert() { return true; },
   update() { return true; },
-  remove() { return true; },
+  remove() { return true; }
 });
 
-Comments.schema = new SimpleSchema({
+// todo labels. i18n for labels??
+
+ReactionCore.Schemas.Comments = new SimpleSchema({
+  _id: {
+    type: String
+  },
+  shopId: {
+    type: String,
+    index: 1,
+    autoValue: ReactionCore.shopIdAutoValue,
+    label: "Comment shopId"
+  },
   sourceId: {
-    _id: {
-      type: String
+    type: String,
+    index: 1   // todo check indexes
+  },
+  userId: {
+    type: String
+  },
+  author: {
+    type: String,
+    label: "Name"
+  },
+  email: {
+    type: String,
+    optional: true,
+    regEx: SimpleSchema.RegEx.Email
+  },
+  ancestors: {
+    type: [String],
+    defaultValue: []
+  },
+  createdAt: {
+    type: Date,
+    autoValue: function () {
+      if (this.isInsert) {
+        return new Date;
+      }
     },
-    sourceId: {
-      type: String
-    },
-    userId: {
-      type: String
-    },
-    author: {
-      type: String
-    },
-    email: {
-      type: String,
-      optional: true
-    },
-    ancestors: {
-      type: [String],
-      defaultValue: []
-    },
-    createdAt: {
-      type: Date
-    },
-    body: {
-      type: String
-    },
-    workflow: {
-      type: ReactionCore.Schemas.Workflow
-    },
-    notifyApprove: {
-      type: String,
-      defaultValue: 'no'
-    },
-    notifyReply: {
-      type: String,
-      defaultValue: 'no'
-    }
+    denyUpdate: true // todo check no update
+  },
+  body: {
+    type: String
+  },
+  workflow: {
+    type: ReactionCore.Schemas.Workflow
+  },
+  notifyReply: {
+    type: Boolean,
+    defaultValue: false
   }
 });
 
-Comments.attachSchema(Comments.schema);
+ReactionCore.Collections.Comments.attachSchema(ReactionCore.Schemas.Comments);

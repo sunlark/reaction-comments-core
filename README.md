@@ -12,9 +12,7 @@ Server side functionality for Reaction Commerce comments
 (if this is not 1st level not nested comment).
 - `createdAt` time of publication
 - `body` text of comment
-- `workflow` uses Workflow Schema. Can have 3 values: `new` for not moderated
-yet, `approved`, `rejected`
-- `notifyApprove` if the comment's author would like to receive notifications
- about moderation approval or rejection.
-- `notifyReplye` if the comment's author would like to receive notifications
+- `workflow` uses Workflow Schema. Can have 2 values: `new` for not moderated
+yet and `approved`
+- `notifyReply` if the comment's author would like to receive notifications
  about reply for his comment.
