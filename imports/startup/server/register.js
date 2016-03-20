@@ -26,7 +26,7 @@ ReactionCore.registerPackage({
     label: "Comments Settings",
     route: "/dashboard/comments/settings",
     provides: "settings",
-    container: "dashboard"
-    // template: "commentsSettings"
+    container: "dashboard",
+    template: "commentsSettings"
   }]
 });
