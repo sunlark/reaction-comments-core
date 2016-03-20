@@ -1,18 +1,5 @@
-import { Mongo } from 'meteor/mongo';
-
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
-
-ReactionCore.Collections.Comments = new Mongo.Collection('Comments');
-
-// Deny all client-side updates since we will be using methods to manage this collection
-// todo is it a modern way?
-
-ReactionCore.Collections.Comments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; }
-});
 
 // todo labels. i18n for labels??
 
@@ -67,4 +54,4 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
   }
 });
 
-ReactionCore.Collections.Comments.attachSchema(ReactionCore.Schemas.Comments);
+

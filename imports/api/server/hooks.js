@@ -1,12 +1,12 @@
-import { Meteor, Email } from 'meteor/meteor';
+import { Meteor, Email } from "meteor/meteor";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import { approveComments } from "../methods";
 import i18next from "i18next";
 
 /**
- * @summary checks the list of comment's ancestors to know if some of them
+ * @summary checks the list of comment"s ancestors to know if some of them
  * wants to know about new replies. Sends the email notification to all of them.
- * @param {Array} ancestorsIds - list of comment's ancestors
+ * @param {Array} ancestorsIds - list of comment"s ancestors
  */
 const notifyAboutReply = (ancestorsIds) => {
   const emails = [];

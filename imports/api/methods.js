@@ -1,9 +1,19 @@
-import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Meteor } from "meteor/meteor";
+import { ValidatedMethod } from "meteor/mdg:validated-method";
+import { SimpleSchema } from "meteor/aldeed:simple-schema";
+import "./collections";
+import { excludeIds } from "./helpers.js";
 
-import { Comments } from './comments.js';
-import { excludeIds } from './helpers.js';
+// anonymous users must provide name & email to leave a comment
+const fieldRequiredIfAnonymous = () => {
+  const shopId = ReactionCore.getShopId();
+  const user = ReactionCore.Collections.Accounts.findOne({
+    userId: Meteor.userId()
+  });
+  if(Roles.userIsInRole(user, "anonymous", shopId) && !this.value) {
+    return "required"; // todo i18n?
+  }
+};
 
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
@@ -24,16 +34,6 @@ const commentValues = new SimpleSchema({
   notifyReply: { type: Boolean }
 });
 
-// anonymous users must provide name & email to leave a comment
-const fieldRequiredIfAnonymous = () => {
-  const shopId = ReactionCore.getShopId();
-  const user = ReactionCore.Collections.Accounts.findOne({
-    userId: Meteor.userId()
-  });
-  if(Roles.userIsInRole(user, "anonymous", shopId) && !this.value)
-    return "required"; // todo i18n?
-};
-
 /**
  * addComment
  * @summary creates a comment
@@ -44,12 +44,12 @@ const fieldRequiredIfAnonymous = () => {
 export const addComment = new ValidatedMethod({
   name: "addComment",
   validate: new SimpleSchema({
-    values: commentValues
+    values: { type: commentValues }
   }).validator(),
   run({ values }) {
     // todo what to do with files?
 
-    // we do need to save author name, but it hasn't introduced in Accounts
+    // we do need to save author name, but it hasn"t introduced in Accounts
     // yet... so todo add denormalized name from profile later
     /*const shopId = ReactionCore.getShopId();
 
@@ -72,7 +72,7 @@ export const addComment = new ValidatedMethod({
     // todo ejson for all fields? or safe it somehow else?
 
     // values.parentId field should be cleaned by SimpleSchema, so here
-    // we can don't touch it
+    // we can don"t touch it
     return ReactionCore.Collections.Comments.insert(values);
   }
 });
@@ -168,6 +168,6 @@ export const removeComments = new ValidatedMethod({
       });
     });
 
-    return ReactionCore.Collections.Comments.delete({_id: {$in: [ids]}});
+    return ReactionCore.Collections.Comments.remove({_id: {$in: [ids]}});
   }
 });

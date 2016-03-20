@@ -1,3 +1,5 @@
+import { ReactionCore } from "meteor/reactioncommerce:core";
+
 ReactionCore.registerPackage({
   label: "Comments",
   name: "reaction-comments-core",
@@ -12,7 +14,7 @@ ReactionCore.registerPackage({
     provides: "dashboard",
     template: "commentsDashboard",
     label: "Comments",
-    description: "Comments",/// todo
+    description: "Comments", // todo
     icon: "fa fa-comments",
     priority: 1,
     container: "utilities",
