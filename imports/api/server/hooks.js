@@ -4,33 +4,6 @@ import { approveComments } from "../methods";
 import i18next from "i18next";
 
 /**
- * @summary checks the list of comment"s ancestors to know if some of them
- * wants to know about new replies. Sends the email notification to all of them.
- * @param {Array} ancestorsIds - list of comment"s ancestors
- */
-const notifyAboutReply = (ancestorsIds) => {
-  const emails = [];
-  // get each comment in ancestors chain and check if his author want to
-  // know about replies
-  ancestorsIds.forEach((id) => {
-    const { userId, notifyReply } = ReactionCore.Collections.Comments.findOne(
-      id
-    );
-    if(notifyReply) {
-      const user = ReactionCore.Collections.Accounts.findOne(userId);
-      // anonymous users arent welcome here
-      if (!user.emails || !user.emails.length > 0) {
-        return;
-      }
-
-      emails.push(user.emails[0].address);
-    }
-  });
-
-  if(emails.length) sendCommentReply(emails);
-};
-
-/**
  * @summary send email notification about reply to provided addresses
  * @param {Array} emails
  */
@@ -55,6 +28,33 @@ const sendCommentReply = (emails) => {
     throw new Meteor.Error(403, "Unable to send reply notification email.",
       error);
   }
+};
+
+/**
+ * @summary checks the list of comment"s ancestors to know if some of them
+ * wants to know about new replies. Sends the email notification to all of them.
+ * @param {Array} ancestorsIds - list of comment"s ancestors
+ */
+const notifyAboutReply = (ancestorsIds) => {
+  const emails = [];
+  // get each comment in ancestors chain and check if his author want to
+  // know about replies
+  ancestorsIds.forEach((id) => {
+    const { userId, notifyReply } = ReactionCore.Collections.Comments.findOne(
+      id
+    );
+    if(notifyReply) {
+      const user = ReactionCore.Collections.Accounts.findOne(userId);
+      // anonymous users arent welcome here
+      if (!user.emails || !user.emails.length > 0) {
+        return;
+      }
+
+      emails.push(user.emails[0].address);
+    }
+  });
+
+  if(emails.length) sendCommentReply(emails);
 };
 
 ReactionCore.MethodHooks.after("addComment", function (options) {

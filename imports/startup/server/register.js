@@ -12,17 +12,21 @@ ReactionCore.registerPackage({
   },
   registry: [{
     provides: "dashboard",
-    template: "commentsDashboard",
+    // template: "commentsDashboard",
     label: "Comments",
-    description: "Comments", // todo
+    description: "Server part of comments functionality", // todo
     icon: "fa fa-comments",
-    priority: 1,
+    priority: 2,
     container: "utilities",
     permissions: [{
       label: "Comments",
       permission: "manageComments"
     }]
   }, {
-    provides: "settings"
+    label: "Comments Settings",
+    route: "/dashboard/comments/settings",
+    provides: "settings",
+    container: "dashboard"
+    // template: "commentsSettings"
   }]
 });
