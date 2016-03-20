@@ -1,14 +1,14 @@
 import { Meteor } from "meteor/meteor";
 import { DDPRateLimiter } from "meteor/ddp-rate-limiter";
 import * as methods from "../../api/methods";
+import { _ } from "meteor/underscore";
 
 const COMMENTS_METHODS = [];
 
-for (let method in methods) {
-  COMMENTS_METHODS.push(method.name);
-}
-console.dir(COMMENTS_METHODS);
-//const COMMENTS_METHODS = methods.map(method => method.name);
+_.each(methods, (method) => {
+  // push only methods objects
+  method.name && COMMENTS_METHODS.push(method.name);
+});
 
 if (Meteor.isServer) {
   const commentRule = {

@@ -11,7 +11,7 @@ import i18next from "i18next";
 const notifyAboutReply = (ancestorsIds) => {
   const emails = [];
   // get each comment in ancestors chain and check if his author want to
-  // know about replyes
+  // know about replies
   ancestorsIds.forEach((id) => {
     const { userId, notifyReply } = ReactionCore.Collections.Comments.findOne(
       id
