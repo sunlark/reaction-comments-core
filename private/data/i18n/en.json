@@ -1,0 +1,11 @@
+[{
+  "language": "English",
+  "i18n": "en",
+  "translation": {
+    "reaction-comments-core": {
+      "replyNotificationEmail": {
+        "body": "There is a new reply to your comment."
+      }
+    }
+  }
+}]

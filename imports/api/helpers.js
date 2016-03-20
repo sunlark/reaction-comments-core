@@ -1,22 +1,11 @@
-// todo names of args & func
 /**
- * @todo
- * @param ancestorsIds
- * @param idToRemove
- * @returns {Array.<T>|*}
+ * @summary subtracts array of ids from initial ids array
+ * @param {Array} initialIds
+ * @param {Array} idsToRemove
+ * @returns {Array} ids without deleted
  */
-export const removeFromAncestors = (ancestorsIds, idToRemove) => {
-  return ancestorsIds.filter(function (pair) {
-    return pair !== idToRemove;
+export const excludeIds = (initialIds, idsToRemove) => {
+  return initialIds.filter(function (pair) {
+    return !idsToRemove.some(id => id === pair)
   });
-};
-
-/**
- * @todo
- * @param ancestorsIds
- */
-export const notifyAboutReply = (ancestorsIds) => {
-  // todo filter with notifyReplyOnly
-  // todo find emails
-  // todo
 };

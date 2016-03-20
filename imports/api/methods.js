@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
 import { Comments } from './comments.js';
-import { removeFromAncestors } from './helpers.js';
+import { excludeIds } from './helpers.js';
 
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
@@ -32,7 +31,7 @@ const fieldRequiredIfAnonymous = () => {
     userId: Meteor.userId()
   });
   if(Roles.userIsInRole(user, "anonymous", shopId) && !this.value)
-    return "required";
+    return "required"; // todo i18n?
 };
 
 /**
@@ -108,55 +107,60 @@ export const updateComment = new ValidatedMethod({
 });
 
 /**
- * approveComment
+ * approveComments
  * @summary mark a comment as approved
+ * @params {Array} ids - ids of comments to be approved
  * @type {ValidatedMethod}
- * @return {*} update result //todo
+ * @return {*} update result
  */
-export const approveComment = new ValidatedMethod({
-  name: "approveComment",
+export const approveComments = new ValidatedMethod({
+  name: "approveComments",
   validate: new SimpleSchema({
-    _id: { type: SimpleSchema.RegEx.Id }
+    ids: { type: [SimpleSchema.RegEx.Id] }
   }).validator(),
-  run({ _id }) {
+  run({ ids }) {
     if (!ReactionCore.hasPermission("manageComments")) {
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    return ReactionCore.Collections.Comments.update(_id, {
-      $set: {
-        "workflow.status": "approved"
-      }
-    });
+    return ReactionCore.Collections.Comments.update(
+      {_id: {$in: ids}},
+      {
+        $set: {
+          "workflow.status": "approved"
+        }
+      },
+      {multi: true});
   }
 });
 
 /**
- * deleteComment
- * @summary deletes a comment. Nested comments, if any, are moved up to one
+ * removeComments
+ * @summary deletes a comments. Nested comments, if any, are moved up to one
  * level
  * @type {ValidatedMethod}
+ * @params {Array} ids - ids of comments to delete
  * @return {Number} returns number of deleted comments
  */
-export const deleteComment = new ValidatedMethod({
-  name: "deleteComment",
+export const removeComments = new ValidatedMethod({
+  name: "removeComments",
   validate: new SimpleSchema({
-    _id: { type: SimpleSchema.RegEx.Id }
+    ids: { type: [SimpleSchema.RegEx.Id] }
   }).validator(),
-  run({ _id }) {
+  run({ ids }) {
     if (!ReactionCore.hasPermission("manageComments")) {
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    // if there are nested comments inside this one, we move them one level
-    // up by excluding current _id from ancestors array
+    // if there are nested comments inside marked to delete, we move them one
+    // level up by excluding being deleted id(s) from ancestors array
     const nestedComments = ReactionCore.Collections.Comments.find({
       ancestors: {
-        $in: [_id]
+        $in: [ids]
       }
     }).fetch();
     nestedComments.forEach(comment => {
-      const ancestors = removeFromAncestors(comment.ancestors, _id);
+      const ancestors = excludeIds(comment.ancestors, ids);
       ReactionCore.Collections.Comments.update(comment._id, {
         $set: {
           ancestors: ancestors
@@ -164,6 +168,6 @@ export const deleteComment = new ValidatedMethod({
       });
     });
 
-    return ReactionCore.Collections.Comments.delete(_id);
+    return ReactionCore.Collections.Comments.delete({_id: {$in: [ids]}});
   }
 });
