@@ -5,6 +5,10 @@
     "reaction-comments-core": {
       "replyNotificationEmail": {
         "body": "There is a new reply to your comment."
+      },
+      "settings": {
+        "enableModeration": "Enable moderation",
+        "enableModerationTooltip": "When enabled, new comments will be blocked until the approval"
       }
     }
   }

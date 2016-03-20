@@ -5,6 +5,10 @@
     "reaction-comments-core": {
       "replyNotificationEmail": {
         "body": "Появился новый ответ на Ваш комментарий."
+      },
+      "settings": {
+        "enableModeration": "Включить модерацию",
+        "enableModerationTooltip": "Если эта включено, новые комментарии будут заблокированы до утверждения"
       }
     }
   }
