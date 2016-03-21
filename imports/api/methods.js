@@ -172,6 +172,13 @@ export const removeComments = new ValidatedMethod({
   }
 });
 
+/**
+ * updateCommentsConfiguration
+ * @summary toggle comments `moderation` setting
+ * @param {Boolean} enabled - new state of comments `moderation` setting
+ * @param {String} shopId - used for multi-shop
+ * @return {Number} `Packages` collection update result
+ */
 export const updateCommentsConfiguration = new ValidatedMethod({
   name: "updateCommentsConfiguration",
   validate: new SimpleSchema({
@@ -179,7 +186,16 @@ export const updateCommentsConfiguration = new ValidatedMethod({
     shopId: { type: String }
   }).validator(),
   run({ enabled, shopId }) {
-    debugger;
-    console.log(enabled);
+    if (!ReactionCore.hasPermission("manageComments")) {
+      throw new Meteor.Error(403, "Access Denied");
+    }
+    return ReactionCore.Collections.Packages.update({
+      name: "reaction-comments-core",
+      shopId: shopId
+    }, {
+      $set: {
+        "settings.moderation.enabled": enabled
+      }
+    });
   }
 });
