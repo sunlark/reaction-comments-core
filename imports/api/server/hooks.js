@@ -65,15 +65,19 @@ ReactionCore.MethodHooks.after("addComment", function (options) {
   }
 
   const _id = options.result;
-  const comment = ReactionCore.Collections.Comments.findOne({ _id });
 
-  // if moderation is Off, set status to approved
-  const commentsSettings = ReactionCore.Collections.Packages.findOne({
-    shopId: this.getShopId(),
-    name: "reaction-comments-core"
-  });
-  if(!commentsSettings.settings.moderation.enabled) {
+  // if comment created by admin/manager, approve it immediately...
+  if (ReactionCore.hasPermission("manageComments")) {
     approveComments.call([_id]);
+  } else {
+    //...else check: if moderation is Off, set status to approved too
+    const commentsSettings = ReactionCore.Collections.Packages.findOne({
+      shopId: this.getShopId(),
+      name: "reaction-comments-core"
+    });
+    if(!commentsSettings.settings.moderation.enabled) {
+      approveComments.call([_id]);
+    }
   }
 
   return _id;
