@@ -53,5 +53,3 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
     defaultValue: false
   }
 });
-
-

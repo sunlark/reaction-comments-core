@@ -1,8 +1,9 @@
-import { Meteor } from "meteor/meteor";
-import { SimpleSchema } from "meteor/aldeed:simple-schema";
+/* eslint-disable prefer-arrow-callback */
 
+import { Meteor } from "meteor/meteor";
+// import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
-//import { Comments } from "../comments.js";
+import Comments from "../collections.js";
 
 // todo order by newest first. newest may be somewhere nested
 
@@ -19,7 +20,7 @@ Meteor.publish("Comments", function (sourceId) {
   }
   // todo get by filter - unread, new, accepted, rejected
   // todo pagination?
-  return ReactionCore.Collections.Comments.find({
+  return /*ReactionCore.Collections.*/Comments.find({
     "sourceId": sourceId,
     "workflow.status": "accepted"
   });
@@ -39,9 +40,7 @@ Meteor.publish("AllComments", function () {
   // todo all/ by source only - in one method?
   // global admin can get all accounts
   if (Roles.userIsInRole(this.userId, ["admin", "owner"], shopId)) {
-    return ReactionCore.Collections.Comments.find({ shopId: shopId });
+    return /*ReactionCore.Collections.*/Comments.find({ shopId: shopId });
   }
   return this.ready();
 });
-
-

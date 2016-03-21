@@ -1,3 +1,3 @@
-import "../../api/methods.js";
-import "../../api/server/publications.js";
-import "../../api/server/hooks.js";
+import "../../api/methods";
+import "../../api/server/publications";
+import "../../api/server/hooks";

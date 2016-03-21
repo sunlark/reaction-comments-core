@@ -1,6 +1,7 @@
 import { Meteor, Email } from "meteor/meteor";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import { approveComments } from "../methods";
+import Comments from "../collections.js";
 import i18next from "i18next";
 
 /**
@@ -40,7 +41,7 @@ const notifyAboutReply = (ancestorsIds) => {
   // get each comment in ancestors chain and check if his author want to
   // know about replies
   ancestorsIds.forEach((id) => {
-    const { userId, notifyReply } = ReactionCore.Collections.Comments.findOne(
+    const { userId, notifyReply } = /*ReactionCore.Collections.*/Comments.findOne(
       id
     );
     if(notifyReply) {
@@ -91,7 +92,7 @@ ReactionCore.MethodHooks.after("approveComments", function (options) {
   }
 
   const _id = options.arguments[0];
-  const comment = ReactionCore.Collections.Comments.findOne({ _id });
+  const comment = /*ReactionCore.Collections.*/Comments.findOne({ _id });
 
   // if this comment is a reply (= has ancestors), notify about it those
   // from them who are interested in

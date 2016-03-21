@@ -9,7 +9,9 @@
       },
       "settings": {
         "enableModeration": "Enable moderation",
-        "enableModerationTooltip": "When enabled, new comments will be blocked until the approval"
+        "enableModerationTooltip": "When enabled, new comments will be blocked until the approval",
+        "moderationEnabled": "Comments moderation is now enabled.",
+        "moderationDisabled": "Comments moderation is now disabled."
       }
     }
   }
