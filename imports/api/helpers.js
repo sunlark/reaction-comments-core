@@ -6,6 +6,6 @@
  */
 export const excludeIds = (initialIds, idsToRemove) => {
   return initialIds.filter(function (pair) {
-    return !idsToRemove.some(id => id === pair)
+    return !idsToRemove.some(id => id === pair);
   });
 };

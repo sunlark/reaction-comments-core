@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { ValidatedMethod } from "meteor/mdg:validated-method";
 import { SimpleSchema } from "meteor/aldeed:simple-schema";
-import "./collections";
+import Comments from "./collections.js";
 import { excludeIds } from "./helpers.js";
 
 // anonymous users must provide name & email to leave a comment
@@ -62,7 +62,7 @@ export const addComment = new ValidatedMethod({
     const parentId = values.parentId;
     if(parentId) {
       // get parent ancestors to build ancestors array
-      const { ancestors } = ReactionCore.Collections.Comments.findOne(
+      const { ancestors } = /*ReactionCore.Collections.*/Comments.findOne(
         parentId
       );
       Array.isArray(ancestors) && ancestors.push(parentId);
@@ -73,7 +73,7 @@ export const addComment = new ValidatedMethod({
 
     // values.parentId field should be cleaned by SimpleSchema, so here
     // we can don"t touch it
-    return ReactionCore.Collections.Comments.insert(values);
+    return /*ReactionCore.Collections.*/Comments.insert(values);
   }
 });
 
@@ -97,7 +97,7 @@ export const updateComment = new ValidatedMethod({
 
     // todo ejson
 
-    return ReactionCore.Collections.Comments.update(_id, {
+    return /*ReactionCore.Collections.*/Comments.update(_id, {
       $set: {
         author: author,
         body: body
@@ -123,7 +123,7 @@ export const approveComments = new ValidatedMethod({
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    return ReactionCore.Collections.Comments.update(
+    return /*ReactionCore.Collections.*/Comments.update(
       {_id: {$in: ids}},
       {
         $set: {
@@ -154,20 +154,32 @@ export const removeComments = new ValidatedMethod({
 
     // if there are nested comments inside marked to delete, we move them one
     // level up by excluding being deleted id(s) from ancestors array
-    const nestedComments = ReactionCore.Collections.Comments.find({
+    const nestedComments = /*ReactionCore.Collections.*/Comments.find({
       ancestors: {
         $in: [ids]
       }
-    }).fetch();
+    });
     nestedComments.forEach(comment => {
       const ancestors = excludeIds(comment.ancestors, ids);
-      ReactionCore.Collections.Comments.update(comment._id, {
+      /*ReactionCore.Collections.*/Comments.update(comment._id, {
         $set: {
           ancestors: ancestors
         }
       });
     });
 
-    return ReactionCore.Collections.Comments.remove({_id: {$in: [ids]}});
+    return /*ReactionCore.Collections.*/Comments.remove({_id: {$in: [ids]}});
+  }
+});
+
+export const updateCommentsConfiguration = new ValidatedMethod({
+  name: "updateCommentsConfiguration",
+  validate: new SimpleSchema({
+    enabled: { type: Boolean },
+    shopId: { type: String }
+  }).validator(),
+  run({ enabled, shopId }) {
+    debugger;
+    console.log(enabled);
   }
 });
