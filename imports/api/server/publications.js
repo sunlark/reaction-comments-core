@@ -1,11 +1,8 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from "meteor/meteor";
-// import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import Comments from "../collections.js";
-
-// todo order by newest first. newest may be somewhere nested
 
 /**
  * comments for given object
@@ -20,15 +17,16 @@ Meteor.publish("Comments", function (sourceId) {
   }
 
   let selector = { "sourceId": sourceId };
+  let fields = {};
 
   // admin/manager can see all comments, simple user only accepted
   if (! Roles.userIsInRole(this.userId, ["owner", "admin", "manageComments"],
       shopId)) {
     selector["workflow.status"] = "accepted";
+    // exclude private data from publishing to non-admins
+    fields = {userId: 0, email: 0, notifyReply: 0};
   }
-  // todo get by filter - unread, new, accepted, rejected
-  // todo pagination?
-  return Comments.find(selector);
+  return Comments.find(selector, {fields: fields, sort: {createdAt: -1}});
 });
 
 /**
@@ -42,10 +40,9 @@ Meteor.publish("AllComments", function () {
   }
   // todo get by filter - unread, new, accepted, rejected
   // todo pagination?
-  // todo all/ by source only - in one method?
-  if (Roles.userIsInRole(this.userId, ["admin", "owner", "manageComments"], 
+  if (Roles.userIsInRole(this.userId, ["admin", "owner", "manageComments"],
       shopId)) {
-    return /*ReactionCore.Collections.*/Comments.find({ shopId: shopId });
+    return Comments.find({ shopId: shopId }, {sort: {createdAt: -1}});
   }
   return this.ready();
 });
