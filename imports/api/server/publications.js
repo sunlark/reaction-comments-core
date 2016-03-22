@@ -15,15 +15,20 @@ import Comments from "../collections.js";
 Meteor.publish("Comments", function (sourceId) {
   check(sourceId, String);
   const shopId = ReactionCore.getShopId();
-  if (!shopId) {
+  if (! shopId) {
     return this.ready();
+  }
+
+  let selector = { "sourceId": sourceId };
+
+  // admin/manager can see all comments, simple user only accepted
+  if (! Roles.userIsInRole(this.userId, ["owner", "admin", "manageComments"],
+      shopId)) {
+    selector["workflow.status"] = "accepted";
   }
   // todo get by filter - unread, new, accepted, rejected
   // todo pagination?
-  return /*ReactionCore.Collections.*/Comments.find({
-    "sourceId": sourceId,
-    "workflow.status": "accepted"
-  });
+  return Comments.find(selector);
 });
 
 /**
@@ -38,8 +43,8 @@ Meteor.publish("AllComments", function () {
   // todo get by filter - unread, new, accepted, rejected
   // todo pagination?
   // todo all/ by source only - in one method?
-  // global admin can get all accounts
-  if (Roles.userIsInRole(this.userId, ["admin", "owner"], shopId)) {
+  if (Roles.userIsInRole(this.userId, ["admin", "owner", "manageComments"], 
+      shopId)) {
     return /*ReactionCore.Collections.*/Comments.find({ shopId: shopId });
   }
   return this.ready();
