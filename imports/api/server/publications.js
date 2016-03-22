@@ -4,10 +4,26 @@ import { Meteor } from "meteor/meteor";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import Comments from "../collections.js";
 
+//
+// define search filters as a schema so we can validate
+// params supplied to the comments publication
+//
+const filters = new SimpleSchema({
+  "author": {
+    type: String,
+    optional: true
+  },
+  "status": {
+    type: String,
+    optional: true
+  }
+});
+
 /**
  * comments for given object
  * @params {String} sourceId - id of object which has comments (Product or
  * Post etc).
+ * @return {Object} return comments cursor
  */
 Meteor.publish("Comments", function (sourceId) {
   check(sourceId, String);
@@ -31,18 +47,31 @@ Meteor.publish("Comments", function (sourceId) {
 
 /**
  * all comments
+ * @params {Object} commentsFilter
+ * @return {Object} return comments cursor
  */
 
-Meteor.publish("AllComments", function () {
+Meteor.publish("AllComments", function (commentsFilter) {
+  check(commentsFilter, Match.OneOf(undefined, filters));
+  
   const shopId = ReactionCore.getShopId();
   if (!shopId) {
     return this.ready();
   }
-  // todo get by filter - unread, new, accepted, rejected
+  
+  let selector = { shopId: shopId };
+  if(filters) {
+    if(filters.author) {
+      selector.author = filters.author;
+    }
+    if(filters.status) {
+      selector["workflow.status"] = filters.status;
+    }
+  }
   // todo pagination?
   if (Roles.userIsInRole(this.userId, ["admin", "owner", "manageComments"],
       shopId)) {
-    return Comments.find({ shopId: shopId }, {sort: {createdAt: -1}});
+    return Comments.find(selector, {sort: {createdAt: -1}});
   }
   return this.ready();
 });
