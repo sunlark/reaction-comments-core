@@ -1,6 +1,5 @@
-/* eslint-disable prefer-arrow-callback */
-
 import { Meteor } from "meteor/meteor";
+// import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import Comments from "../collections.js";
 
@@ -28,8 +27,11 @@ const filters = new SimpleSchema({
  */
 Meteor.publish("Comments", function (sourceId) {
   check(sourceId, String);
+  // new SimpleSchema({
+  //   sourceId: {type: String}
+  // }).validate({ sourceId });
   const shopId = ReactionCore.getShopId();
-  if (! shopId) {
+  if (!shopId) {
     return this.ready();
   }
 
@@ -51,7 +53,6 @@ Meteor.publish("Comments", function (sourceId) {
  * @param {Object} commentsFilter
  * @returns {Object} return comments cursor
  */
-
 Meteor.publish("AllComments", function (commentsFilter) {
   check(commentsFilter, Match.OneOf(undefined, filters));
   
