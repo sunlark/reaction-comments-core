@@ -1,7 +1,5 @@
-/* eslint-disable prefer-arrow-callback */
-
 import { Meteor } from "meteor/meteor";
-// import { SimpleSchema } from "meteor/aldeed:simple-schema";
+import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import Comments from "../collections.js";
 
@@ -14,6 +12,9 @@ import Comments from "../collections.js";
  */
 Meteor.publish("Comments", function (sourceId) {
   check(sourceId, String);
+  // new SimpleSchema({
+  //   sourceId: {type: String}
+  // }).validate({ sourceId });
   const shopId = ReactionCore.getShopId();
   if (!shopId) {
     return this.ready();
