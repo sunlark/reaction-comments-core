@@ -1,6 +1,10 @@
 # reaction-comments-core
 Server side functionality for Reaction Commerce comments
 
+Package has one setting: `moderation`, which can be On/Off. When enabled,
+each newly created comment should go through moderation check and approved
+before publication. When disabled, each newly created comment will be approved automatically.
+
 ### Schema
 
 - `sourceId` could be ProductId or PostId

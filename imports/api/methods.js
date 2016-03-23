@@ -38,8 +38,8 @@ const commentValues = new SimpleSchema({
  * addComment
  * @summary creates a comment
  * @type {ValidatedMethod}
- * @params {Object} values - comment object
- * @return {String} id of created comment
+ * @param {Object} values - comment object
+ * @returns {String} id of created comment
  */
 export const addComment = new ValidatedMethod({
   name: "addComment",
@@ -81,7 +81,7 @@ export const addComment = new ValidatedMethod({
  * updateComment
  * @summary updates author name and/or body of comment
  * @type {ValidatedMethod}
- * @return {*} update result //todo
+ * @returns {*} update result //todo
  */
 export const updateComment = new ValidatedMethod({
   name: "updateComment",
@@ -109,9 +109,9 @@ export const updateComment = new ValidatedMethod({
 /**
  * approveComments
  * @summary mark a comment as approved
- * @params {Array} ids - ids of comments to be approved
+ * @param {Array} ids - ids of comments to be approved
  * @type {ValidatedMethod}
- * @return {*} update result
+ * @returns {*} update result
  */
 export const approveComments = new ValidatedMethod({
   name: "approveComments",
@@ -139,8 +139,8 @@ export const approveComments = new ValidatedMethod({
  * @summary deletes a comments. Nested comments, if any, are moved up to one
  * level
  * @type {ValidatedMethod}
- * @params {Array} ids - ids of comments to delete
- * @return {Number} returns number of deleted comments
+ * @param {Array} ids - ids of comments to delete
+ * @returns {Number} returns number of deleted comments
  */
 export const removeComments = new ValidatedMethod({
   name: "removeComments",
@@ -168,7 +168,7 @@ export const removeComments = new ValidatedMethod({
       });
     });
 
-    return /*ReactionCore.Collections.*/Comments.remove({_id: {$in: [ids]}});
+    return /*ReactionCore.Collections.*/Comments.remove({_id: {$in: ids}});
   }
 });
 
@@ -177,7 +177,7 @@ export const removeComments = new ValidatedMethod({
  * @summary toggle comments `moderation` setting
  * @param {Boolean} enabled - new state of comments `moderation` setting
  * @param {String} shopId - used for multi-shop
- * @return {Number} `Packages` collection update result
+ * @returns {Number} `Packages` collection update result
  */
 export const updateCommentsConfiguration = new ValidatedMethod({
   name: "updateCommentsConfiguration",
