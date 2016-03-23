@@ -24,7 +24,7 @@ const filters = new SimpleSchema({
  * comments for given object
  * @param {String} sourceId - id of object which has comments (Product or
  * Post etc).
- * @return {Object} return comments cursor
+ * @returns {Object} return comments cursor
  */
 Meteor.publish("Comments", function (sourceId) {
   check(sourceId, String);
@@ -49,7 +49,7 @@ Meteor.publish("Comments", function (sourceId) {
 /**
  * all comments
  * @param {Object} commentsFilter
- * @return {Object} return comments cursor
+ * @returns {Object} return comments cursor
  */
 
 Meteor.publish("AllComments", function (commentsFilter) {
