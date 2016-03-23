@@ -2,7 +2,7 @@ import { Meteor, Email } from "meteor/meteor";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import { approveComments } from "../methods";
 import Comments from "../collections.js";
-import i18next from "i18next";
+// import i18next from "i18next";
 
 /**
  * @summary send email notification about reply to provided addresses

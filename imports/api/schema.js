@@ -15,12 +15,12 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
   },
   sourceId: {
     type: String,
-    index: 1   // todo check indexes
+    index: 1 // todo check indexes
   },
   userId: {
     type: String
   },
-  author: {
+  name: {
     type: String,
     label: "Name"
   },
@@ -43,7 +43,8 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
     denyUpdate: true // todo check no update
   },
   content: {
-    type: Object
+    type: Object,
+    blackbox: true
   },
   workflow: {
     type: ReactionCore.Schemas.Workflow

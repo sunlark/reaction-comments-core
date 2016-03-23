@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-// import { SimpleSchema } from "meteor/aldeed:simple-schema";
+import { SimpleSchema } from "meteor/aldeed:simple-schema";
 import { ReactionCore } from "meteor/reactioncommerce:core";
 import Comments from "../collections.js";
 
@@ -8,11 +8,11 @@ import Comments from "../collections.js";
 // params supplied to the comments publication
 //
 const filters = new SimpleSchema({
-  "author": {
+  name: {
     type: String,
     optional: true
   },
-  "status": {
+  status: {
     type: String,
     allowedValues: ["new", "approved"],
     optional: true
@@ -35,7 +35,7 @@ Meteor.publish("Comments", function (sourceId) {
     return this.ready();
   }
 
-  let selector = { "sourceId": sourceId };
+  let selector = { sourceId: sourceId };
   let fields = {};
 
   // admin/manager can see all comments, simple user only accepted
@@ -55,16 +55,16 @@ Meteor.publish("Comments", function (sourceId) {
  */
 Meteor.publish("AllComments", function (commentsFilter) {
   check(commentsFilter, Match.OneOf(undefined, filters));
-  
+
   const shopId = ReactionCore.getShopId();
   if (!shopId) {
     return this.ready();
   }
-  
+
   let selector = { shopId: shopId };
   if(commentsFilter) {
-    if(commentsFilter.author) {
-      selector.author = commentsFilter.author;
+    if(commentsFilter.name) {
+      selector.name = commentsFilter.name;
     }
     if(commentsFilter.status) {
       selector["workflow.status"] = commentsFilter.status;

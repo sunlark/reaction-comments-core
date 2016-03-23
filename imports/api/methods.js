@@ -20,7 +20,7 @@ const fieldRequiredIfAnonymous = () => {
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
   // userId: { type: String },
-  author: {
+  name: {
     type: String,
     optional: true,
     custom: fieldRequiredIfAnonymous
@@ -32,7 +32,7 @@ const commentValues = new SimpleSchema({
     custom: fieldRequiredIfAnonymous
   },
   parentId: { type: String, optional: true },
-  content: { type: Object },
+  content: { type: Object, blackbox: true },
   notify: { type: Boolean }
 });
 
@@ -94,10 +94,10 @@ export const updateComment = new ValidatedMethod({
   name: "updateComment",
   validate: new SimpleSchema({
     _id: { type: SimpleSchema.RegEx.Id },
-    author: { type: String, optional: true },
+    name: { type: String, optional: true },
     content: { type: Object, optional: true }
   }).validator(),
-  run({ _id, author, content }) {
+  run({ _id, name, content }) {
     if (!ReactionCore.hasPermission("manageComments")) {
       throw new Meteor.Error(403, "Access Denied");
     }
@@ -106,7 +106,7 @@ export const updateComment = new ValidatedMethod({
 
     return /*ReactionCore.Collections.*/Comments.update(_id, {
       $set: {
-        author,
+        name,
         content
       }
     });

@@ -9,7 +9,7 @@ before publication. When disabled, each newly created comment will be approved a
 
 - `sourceId` could be ProductId or PostId
 - `userId`
-- `author` name of comment's author (denormalization for quicker access)
+- `name` name of comment's author (denormalization for quicker access)
 - `email` email of comment's author (required for non registered user to leave
  a comment)
 - `ancestors` array with ids of Parent comments in 'Reply-To' chain, if any
