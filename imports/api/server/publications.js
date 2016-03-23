@@ -15,6 +15,7 @@ const filters = new SimpleSchema({
   },
   "status": {
     type: String,
+    allowedValues: ["new", "approved"],
     optional: true
   }
 });
@@ -60,12 +61,12 @@ Meteor.publish("AllComments", function (commentsFilter) {
   }
   
   let selector = { shopId: shopId };
-  if(filters) {
-    if(filters.author) {
-      selector.author = filters.author;
+  if(commentsFilter) {
+    if(commentsFilter.author) {
+      selector.author = commentsFilter.author;
     }
-    if(filters.status) {
-      selector["workflow.status"] = filters.status;
+    if(commentsFilter.status) {
+      selector["workflow.status"] = commentsFilter.status;
     }
   }
   // todo pagination?
