@@ -38,7 +38,7 @@ const commentValues = new SimpleSchema({
  * addComment
  * @summary creates a comment
  * @type {ValidatedMethod}
- * @params {Object} values - comment object
+ * @param {Object} values - comment object
  * @return {String} id of created comment
  */
 export const addComment = new ValidatedMethod({
@@ -109,7 +109,7 @@ export const updateComment = new ValidatedMethod({
 /**
  * approveComments
  * @summary mark a comment as approved
- * @params {Array} ids - ids of comments to be approved
+ * @param {Array} ids - ids of comments to be approved
  * @type {ValidatedMethod}
  * @return {*} update result
  */
@@ -139,7 +139,7 @@ export const approveComments = new ValidatedMethod({
  * @summary deletes a comments. Nested comments, if any, are moved up to one
  * level
  * @type {ValidatedMethod}
- * @params {Array} ids - ids of comments to delete
+ * @param {Array} ids - ids of comments to delete
  * @return {Number} returns number of deleted comments
  */
 export const removeComments = new ValidatedMethod({
