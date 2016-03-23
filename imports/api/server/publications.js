@@ -39,7 +39,7 @@ Meteor.publish("Comments", function (sourceId) {
   // admin/manager can see all comments, simple user only accepted
   if (! Roles.userIsInRole(this.userId, ["owner", "admin", "manageComments"],
       shopId)) {
-    selector["workflow.status"] = "accepted";
+    selector["workflow.status"] = "approved";
     // exclude private data from publishing to non-admins
     fields = {userId: 0, email: 0, notifyReply: 0};
   }
