@@ -1,8 +1,10 @@
 import { Meteor } from "meteor/meteor";
 import { ValidatedMethod } from "meteor/mdg:validated-method";
 import { SimpleSchema } from "meteor/aldeed:simple-schema";
-import Comments from "./collections.js";
-import { excludeIds } from "./helpers.js";
+import { ReactionCore } from "meteor/reactioncommerce:core";
+import { Roles } from "meteor/alanning:roles";
+import Comments from "./collections";
+import { excludeIds } from "./helpers";
 
 // anonymous users must provide name & email to leave a comment
 const fieldRequiredIfAnonymous = () => {
@@ -17,7 +19,7 @@ const fieldRequiredIfAnonymous = () => {
 
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
-  userId: { type: String },
+  // userId: { type: String },
   author: {
     type: String,
     optional: true,
@@ -31,7 +33,7 @@ const commentValues = new SimpleSchema({
   },
   parentId: { type: String, optional: true },
   content: { type: Object },
-  notifyReply: { type: Boolean }
+  notify: { type: Boolean }
 });
 
 /**
@@ -47,6 +49,7 @@ export const addComment = new ValidatedMethod({
     values: { type: commentValues }
   }).validator(),
   run({ values }) {
+    debugger;
     // todo what to do with files?
 
     // we do need to save author name, but it hasn"t introduced in Accounts
@@ -58,6 +61,10 @@ export const addComment = new ValidatedMethod({
     });
     if(!Roles.userIsInRole(account, "anonymous", shopId)) {
     }*/
+    const userId = Meteor.userId();
+    if (userId) {
+      values.userId = userId;
+    }
 
     const parentId = values.parentId;
     if(parentId) {

@@ -43,7 +43,7 @@ Meteor.publish("Comments", function (sourceId) {
       shopId)) {
     selector["workflow.status"] = "accepted";
     // exclude private data from publishing to non-admins
-    fields = {userId: 0, email: 0, notifyReply: 0};
+    fields = {userId: 0, email: 0, notify: 0};
   }
   return Comments.find(selector, {fields: fields, sort: {createdAt: -1}});
 });

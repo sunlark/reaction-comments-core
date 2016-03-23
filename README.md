@@ -18,5 +18,5 @@ before publication. When disabled, each newly created comment will be approved a
 - `content` comment content object
 - `workflow` uses Workflow Schema. Can have 2 values: `new` for not moderated
 yet and `approved`
-- `notifyReply` if the comment's author would like to receive notifications
+- `notify` if the comment's author would like to receive notifications
  about reply for his comment.

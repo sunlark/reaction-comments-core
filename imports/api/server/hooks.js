@@ -41,10 +41,10 @@ const notifyAboutReply = (ancestorsIds) => {
   // get each comment in ancestors chain and check if his author want to
   // know about replies
   ancestorsIds.forEach((id) => {
-    const { userId, notifyReply } = /*ReactionCore.Collections.*/Comments.findOne(
+    const { userId, notify } = /*ReactionCore.Collections.*/Comments.findOne(
       id
     );
-    if(notifyReply) {
+    if(notify) {
       const user = ReactionCore.Collections.Accounts.findOne(userId);
       // anonymous users arent welcome here
       if (!user.emails || !user.emails.length > 0) {

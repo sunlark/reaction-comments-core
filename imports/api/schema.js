@@ -48,7 +48,7 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
   workflow: {
     type: ReactionCore.Schemas.Workflow
   },
-  notifyReply: {
+  notify: {
     type: Boolean,
     defaultValue: false
   }
