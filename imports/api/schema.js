@@ -43,7 +43,7 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
     denyUpdate: true // todo check no update
   },
   content: {
-    type: String
+    type: Object
   },
   workflow: {
     type: ReactionCore.Schemas.Workflow

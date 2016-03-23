@@ -30,7 +30,7 @@ const commentValues = new SimpleSchema({
     custom: fieldRequiredIfAnonymous
   },
   parentId: { type: String, optional: true },
-  body: { type: String },
+  content: { type: Object },
   notifyReply: { type: Boolean }
 });
 
@@ -79,7 +79,7 @@ export const addComment = new ValidatedMethod({
 
 /**
  * updateComment
- * @summary updates author name and/or body of comment
+ * @summary updates author name and/or content of comment
  * @type {ValidatedMethod}
  * @returns {*} update result //todo
  */
@@ -88,9 +88,9 @@ export const updateComment = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: SimpleSchema.RegEx.Id },
     author: { type: String, optional: true },
-    body: { type: String, optional: true }
+    content: { type: Object, optional: true }
   }).validator(),
-  run({ _id, author, body }) {
+  run({ _id, author, content }) {
     if (!ReactionCore.hasPermission("manageComments")) {
       throw new Meteor.Error(403, "Access Denied");
     }
@@ -99,8 +99,8 @@ export const updateComment = new ValidatedMethod({
 
     return /*ReactionCore.Collections.*/Comments.update(_id, {
       $set: {
-        author: author,
-        body: body
+        author,
+        content
       }
     });
   }

@@ -15,7 +15,7 @@ before publication. When disabled, each newly created comment will be approved a
 - `ancestors` array with ids of Parent comments in 'Reply-To' chain, if any
 (if this is not 1st level not nested comment).
 - `createdAt` time of publication
-- `body` text of comment
+- `content` comment content object
 - `workflow` uses Workflow Schema. Can have 2 values: `new` for not moderated
 yet and `approved`
 - `notifyReply` if the comment's author would like to receive notifications
