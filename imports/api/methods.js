@@ -115,7 +115,7 @@ export const updateComment = new ValidatedMethod({
  * @summary mark a comment as approved
  * @param {Array} ids - ids of comments to be approved
  * @type {ValidatedMethod}
- * @returns {*} update result
+ * @returns {Number} update result
  */
 export const approveComments = new ValidatedMethod({
   name: "approveComments",
@@ -127,14 +127,15 @@ export const approveComments = new ValidatedMethod({
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    return /*ReactionCore.Collections.*/Comments.update(
-      {_id: {$in: ids}},
-      {
-        $set: {
-          "workflow.status": "approved"
-        }
-      },
-      {multi: true});
+    return Comments.update({
+      _id: { $in: ids }
+    }, {
+      $set: {
+        "workflow.status": "approved"
+      }
+    }, {
+      multi: true
+    });
   }
 });
 
