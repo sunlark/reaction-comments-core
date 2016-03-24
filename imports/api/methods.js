@@ -19,7 +19,6 @@ const fieldRequiredIfAnonymous = () => {
 
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
-  // userId: { type: String },
   name: {
     type: String,
     optional: true,
@@ -41,7 +40,7 @@ const commentValues = new SimpleSchema({
  * @summary creates a comment
  * @type {ValidatedMethod}
  * @param {Object} values - comment object
- * @returns {String} id of created comment
+ * @returns {String} _id of created comment
  */
 export const addComment = new ValidatedMethod({
   name: "addComment",
@@ -49,7 +48,6 @@ export const addComment = new ValidatedMethod({
     values: { type: commentValues }
   }).validator(),
   run({ values }) {
-    debugger;
     // todo what to do with files?
 
     // we do need to save author name, but it hasn"t introduced in Accounts
@@ -69,9 +67,8 @@ export const addComment = new ValidatedMethod({
     const parentId = values.parentId;
     if(parentId) {
       // get parent ancestors to build ancestors array
-      const { ancestors } = /*ReactionCore.Collections.*/Comments.findOne(
-        parentId
-      );
+      const { ancestors } = Comments.findOne(parentId);
+      // todo should we clone array?
       Array.isArray(ancestors) && ancestors.push(parentId);
       values.ancestors = ancestors;
     }
@@ -80,7 +77,7 @@ export const addComment = new ValidatedMethod({
 
     // values.parentId field should be cleaned by SimpleSchema, so here
     // we can don"t touch it
-    return /*ReactionCore.Collections.*/Comments.insert(values);
+    return Comments.insert(values);
   }
 });
 

@@ -59,25 +59,23 @@ const notifyAboutReply = (ancestorsIds) => {
 };
 
 ReactionCore.MethodHooks.after("addComment", function (options) {
-  ReactionCore.Log.debug("MethodHooks after addComment", options);
-
   if (options.error) {
     return;
   }
 
   const _id = options.result;
-
+  ReactionCore.Log.info("New comment added:", _id);
   // if comment created by admin/manager, approve it immediately...
   if (ReactionCore.hasPermission("manageComments")) {
-    approveComments.call([_id]);
+    approveComments.call({ _id: [_id] });
   } else {
-    //...else check: if moderation is Off, set status to approved too
+    // ...else check: if moderation is Off, set status to approved too
     const commentsSettings = ReactionCore.Collections.Packages.findOne({
       shopId: this.getShopId(),
       name: "reaction-comments-core"
     });
     if(!commentsSettings.settings.moderation.enabled) {
-      approveComments.call([_id]);
+      approveComments.call({ _id: [_id] });
     }
   }
 

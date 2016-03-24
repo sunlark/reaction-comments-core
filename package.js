@@ -5,7 +5,7 @@ Package.describe({
 
 Npm.depends({
   // moment: "2.10.6"
-  "i18next": "2.3.5"
+  i18next: "2.3.5"
 });
 
 Package.onUse(function (api) {
@@ -45,7 +45,7 @@ Package.onTest(function (api) {
   api.use("aldeed:simple-schema");
   api.use("mdg:validated-method");
 //  api.use('avital:mocha@2.1.0_10'); //2.1.1-rc.1
-  api.use('practicalmeteor:mocha@2.1.1-rc.1');
+  api.use("practicalmeteor:mocha@2.1.1-rc.1");
   api.use("sunlark:reaction-comments-core");
   api.use("reactioncommerce:reaction-factories@0.4.2");
   api.use("reactioncommerce:core@0.12.0");
