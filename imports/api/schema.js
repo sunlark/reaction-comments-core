@@ -27,7 +27,8 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
   },
   name: {
     type: String,
-    label: "Name"
+    label: "Name",
+    optional: true // FIXME make reaction account name field required
   },
   email: {
     type: String,

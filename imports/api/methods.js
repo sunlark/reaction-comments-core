@@ -7,15 +7,12 @@ import Comments from "./collections";
 import { excludeIds } from "./helpers";
 
 // anonymous users must provide name & email to leave a comment
-const fieldRequiredIfAnonymous = () => {
+function fieldRequiredIfAnonymous() {
   const shopId = ReactionCore.getShopId();
-  const user = ReactionCore.Collections.Accounts.findOne({
-    userId: Meteor.userId()
-  });
-  if(Roles.userIsInRole(user, "anonymous", shopId) && !this.value) {
-    return "required"; // todo i18n?
+  if (Roles.userIsInRole(this.userId, "anonymous", shopId) && !this.value) {
+    return "required";
   }
-};
+}
 
 const commentValues = new SimpleSchema({
   sourceId: { type: String },
@@ -48,27 +45,31 @@ export const addComment = new ValidatedMethod({
     values: { type: commentValues }
   }).validator(),
   run({ values }) {
-    // todo what to do with files?
-
-    // we do need to save author name, but it hasn"t introduced in Accounts
-    // yet... so todo add denormalized name from profile later
-    /*const shopId = ReactionCore.getShopId();
-
-    const account = ReactionCore.Collections.Accounts.findOne({
-      userId: Meteor.userId()
-    });
-    if(!Roles.userIsInRole(account, "anonymous", shopId)) {
-    }*/
+    const shopId = ReactionCore.getShopId();
     const userId = Meteor.userId();
-    if (userId) {
-      values.userId = userId;
+    if (!shopId || !userId) {
+      throw new Meteor.Error(404, "Not Found", "ShopId or UserId not found");
     }
 
+    // we are taking anonymous user name from UI from, but for registered users
+    // we not display form and taking name from `Accounts`
+    const account = ReactionCore.Collections.Accounts.findOne({
+      userId: userId
+    });
+    if (!Roles.userIsInRole(userId, "anonymous", shopId)) {
+      if (account.emails && account.emails.length) {
+        values.email = account.emails[0].address;
+      }
+      if (account.profile.name) {
+        values.name = account.profile.name;
+      }
+    }
+    values.userId = userId;
+
     const parentId = values.parentId;
-    if(parentId) {
+    if (parentId) {
       // get parent ancestors to build ancestors array
       const { ancestors } = Comments.findOne(parentId);
-      // todo should we clone array?
       Array.isArray(ancestors) && ancestors.push(parentId);
       values.ancestors = ancestors;
     }

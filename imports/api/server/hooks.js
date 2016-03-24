@@ -69,24 +69,25 @@ ReactionCore.MethodHooks.after("addComment", function (options) {
     return options.error;
   }
 
+  let res = null;
   const _id = options.result;
   ReactionCore.Log.info("New comment added:", _id);
 
   // if comment created by admin/manager, approve it immediately...
   if (ReactionCore.hasPermission("manageComments")) {
-    approveComments.call({ ids: [_id] });
+    res = approveComments.call({ ids: [_id] });
   } else {
     // ...else check: if moderation is Off, set status to approved too
     const commentsSettings = ReactionCore.Collections.Packages.findOne({
-      shopId: this.getShopId(),
+      shopId: ReactionCore.getShopId(),
       name: "reaction-comments-core"
     });
     if(!commentsSettings.settings.moderation.enabled) {
-      approveComments.call({ ids: [_id] });
+      res = approveComments.call({ ids: [_id] });
     }
   }
 
-  return _id;
+  return { _id, res };
 });
 
 /**
