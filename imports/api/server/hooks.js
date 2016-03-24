@@ -26,8 +26,11 @@ const sendCommentReply = (emails) => {
       text: i18next.t("replyNotificationEmail.body")
     });
   } catch (error) {
-    throw new Meteor.Error(403, "Unable to send reply notification email.",
-      error);
+    throw new Meteor.Error(403, "Unable to send comment reply notification" +
+      " email.", error);
+  } finally {
+    ReactionCore.Log.info(`Trying to send comment reply notification mail to 
+      ${emails}`);
   }
 };
 
@@ -83,14 +86,15 @@ ReactionCore.MethodHooks.after("addComment", function (options) {
 });
 
 ReactionCore.MethodHooks.after("approveComments", function (options) {
-  ReactionCore.Log.debug("MethodHooks after approveComment", options);
-
+  
   if (options.error) {
+    ReactionCore.Log.warn("error while approveComment ", options.error);
     return;
   }
 
   const _id = options.arguments[0];
-  const comment = /*ReactionCore.Collections.*/Comments.findOne({ _id });
+  const comment = Comments.findOne({ _id });
+  ReactionCore.Log.info(`comment ${_id} approved`);
 
   // if this comment is a reply (= has ancestors), notify about it those
   // from them who are interested in
