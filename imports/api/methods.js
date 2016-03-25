@@ -37,6 +37,8 @@ const commentValues = new SimpleSchema({
  * @summary creates a comment
  * @type {ValidatedMethod}
  * @param {Object} values - comment object
+ * @fires `hook` after.method which could approve new comment and modify return
+ * result to Object with approval result
  * @returns {String} _id of created comment
  */
 export const addComment = new ValidatedMethod({
@@ -79,35 +81,6 @@ export const addComment = new ValidatedMethod({
     // values.parentId field should be cleaned by SimpleSchema, so here
     // we can don"t touch it
     return Comments.insert(values);
-  }
-});
-
-/**
- * updateComment
- * @summary updates author name and/or content of comment
- * @type {ValidatedMethod}
- * @returns {*} update result //todo
- */
-export const updateComment = new ValidatedMethod({
-  name: "updateComment",
-  validate: new SimpleSchema({
-    _id: { type: SimpleSchema.RegEx.Id },
-    name: { type: String, optional: true },
-    content: { type: Object, optional: true }
-  }).validator(),
-  run({ _id, name, content }) {
-    if (!ReactionCore.hasPermission("manageComments")) {
-      throw new Meteor.Error(403, "Access Denied");
-    }
-
-    // todo ejson
-
-    return /*ReactionCore.Collections.*/Comments.update(_id, {
-      $set: {
-        name,
-        content
-      }
-    });
   }
 });
 
@@ -175,6 +148,39 @@ export const removeComments = new ValidatedMethod({
     });
 
     return /*ReactionCore.Collections.*/Comments.remove({_id: {$in: ids}});
+  }
+});
+
+/**
+ * updateComment
+ * @summary updates content of comment
+ * @type {ValidatedMethod}
+ * @param {String} _id - comment _id
+ * @param {Object} content - object with comment content
+ * @todo looks like we lose reactivity with content `blackbox`. Maybe it's better
+ * to separately customize `content` field for each UI (Blaze, ReactJS). Or maybe
+ * this is a bug in SS, because I didn't find a mention about losing reactivity
+ * in `Blackbox section` of SS documentation. Or maybe this is not connected
+ * with `blackbox`
+ * @returns {Number} update result
+ */
+export const updateComment = new ValidatedMethod({
+  name: "updateComment",
+  validate: new SimpleSchema({
+    _id: { type: SimpleSchema.RegEx.Id },
+    content: { type: Object, blackbox: true }
+  }).validator(),
+  run({ _id, content }) {
+    if (!ReactionCore.hasPermission("manageComments")) {
+      throw new Meteor.Error(403, "Access Denied");
+    }
+    // todo ejson
+
+    return /*ReactionCore.Collections.*/Comments.update(_id, {
+      $set: {
+        content
+      }
+    });
   }
 });
 

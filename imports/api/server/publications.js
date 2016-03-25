@@ -43,9 +43,9 @@ Meteor.publish("Comments", function (sourceId) {
       shopId)) {
     selector["workflow.status"] = "approved";
     // exclude private data from publishing to non-admins
-    fields = {userId: 0, email: 0, notify: 0};
+    fields = { email: 0, notify: 0 };
   }
-  return Comments.find(selector, {fields: fields, sort: {createdAt: -1}});
+  return Comments.find(selector, { fields: fields, sort: { createdAt: -1 } });
 });
 
 /**
@@ -73,7 +73,7 @@ Meteor.publish("AllComments", function (commentsFilter) {
   // todo pagination?
   if (Roles.userIsInRole(this.userId, ["admin", "owner", "manageComments"],
       shopId)) {
-    return Comments.find(selector, {sort: {createdAt: -1}});
+    return Comments.find(selector, { sort: { createdAt: -1 } });
   }
   return this.ready();
 });
