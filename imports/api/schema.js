@@ -64,6 +64,10 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
   },
   notify: {
     type: Boolean,
-    defaultValue: true
+    defaultValue: false
+    // it is `false` by default, because we could decide to not give user an ability
+    // to choose notify or not if this is "reply", for example. If you want to
+    // display such selector with initial state = `true`, then you should set it
+    // manually before display within UI
   }
 });
