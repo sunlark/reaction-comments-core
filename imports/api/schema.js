@@ -44,6 +44,17 @@ ReactionCore.Schemas.Comments = new SimpleSchema({
     },
     denyUpdate: true // todo check no update
   },
+  updatedAt: {
+    type: Date,
+    autoValue: function () {
+      if (this.isUpdate) {
+        return {
+          $set: new Date
+        };
+      }
+    },
+    optional: true
+  },
   content: {
     type: Object,
     blackbox: true

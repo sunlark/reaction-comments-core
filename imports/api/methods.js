@@ -50,7 +50,7 @@ export const addComment = new ValidatedMethod({
     const shopId = ReactionCore.getShopId();
     const userId = Meteor.userId();
     if (!shopId || !userId) {
-      throw new Meteor.Error(404, "Not Found", "ShopId or UserId not found");
+      throw new Meteor.Error("addComment.not-found", "ShopId or UserId not found");
     }
 
     // we are taking anonymous user name from UI from, but for registered users
@@ -98,7 +98,7 @@ export const approveComments = new ValidatedMethod({
   }).validator(),
   run({ ids }) {
     if (!ReactionCore.hasPermission("manageComments")) {
-      throw new Meteor.Error(403, "Access Denied");
+      throw new Meteor.Error("approveComments.access-denied", "Access Denied");
     }
 
     return Comments.update({
@@ -128,7 +128,7 @@ export const removeComments = new ValidatedMethod({
   }).validator(),
   run({ ids }) {
     if (!ReactionCore.hasPermission("manageComments")) {
-      throw new Meteor.Error(403, "Access Denied");
+      throw new Meteor.Error("removeComments.access-denied", "Access Denied");
     }
 
     // if there are nested comments inside marked to delete, we move them one
@@ -172,7 +172,7 @@ export const updateComment = new ValidatedMethod({
   }).validator(),
   run({ _id, content }) {
     if (!ReactionCore.hasPermission("manageComments")) {
-      throw new Meteor.Error(403, "Access Denied");
+      throw new Meteor.Error("updateComment.access-denied", "Access Denied");
     }
     // todo ejson
 
@@ -199,7 +199,7 @@ export const updateCommentsConfiguration = new ValidatedMethod({
   }).validator(),
   run({ enabled, shopId }) {
     if (!ReactionCore.hasPermission("manageComments")) {
-      throw new Meteor.Error(403, "Access Denied");
+      throw new Meteor.Error("updateCommentsConfiguration.access-denied", "Access Denied");
     }
     return ReactionCore.Collections.Packages.update({
       name: "reaction-comments-core",
