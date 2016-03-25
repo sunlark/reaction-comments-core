@@ -157,11 +157,6 @@ export const removeComments = new ValidatedMethod({
  * @type {ValidatedMethod}
  * @param {String} _id - comment _id
  * @param {Object} content - object with comment content
- * @todo looks like we lose reactivity with content `blackbox`. Maybe it's better
- * to separately customize `content` field for each UI (Blaze, ReactJS). Or maybe
- * this is a bug in SS, because I didn't find a mention about losing reactivity
- * in `Blackbox section` of SS documentation. Or maybe this is not connected
- * with `blackbox`
  * @returns {Number} update result
  */
 export const updateComment = new ValidatedMethod({
