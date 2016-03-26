@@ -12,6 +12,9 @@
         "enableModerationTooltip": "Если включено, то новые комментарии будут заблокированы до утверждения",
         "moderationEnabled": "Модерация комментариев включена.",
         "moderationDisabled": "Модерация комментариев отключена."
+      },
+      "email": {
+        "replyToYourComment": "Ответ на ваше сообщение на {{shopName}}"
       }
     }
   }

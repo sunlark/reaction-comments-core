@@ -147,7 +147,7 @@ export const removeComments = new ValidatedMethod({
       });
     });
 
-    return /*ReactionCore.Collections.*/Comments.remove({_id: {$in: ids}});
+    return /*ReactionCore.Collections.*/Comments.remove({ _id: { $in: ids } });
   }
 });
 

@@ -4,64 +4,86 @@ import { approveComments } from "../methods";
 import Comments from "../collections.js";
 // import { _ } from "meteor/underscore";
 import { mergeUniq } from "../helpers";
-// import i18next from "i18next";
+import i18next from "i18next";
 
 /**
+ * sendCommentReply
+ * @description Send bunch of notification emails sorted by shopId
  * @summary send email notification about reply to provided addresses
- * @param {Array} emails
+ * @param {Object} emails
+ * @return {Undefined}
  */
 const sendCommentReply = emails => {
-  // FIXME: `order` is not belong to this hook
-  const shop = ReactionCore.Collections.Shops.findOne(order.shopId);
-  if (!shop.emails[0].address) {
-    shop.emails[0].address = "no-reply@reactioncommerce.com";
-    ReactionCore.Log.warn("No shop email configured. Using no-reply to send " +
-      "mail");
-  }
-  // todo SSR.compileTemplate
-  try {
-    return Email.send({
-      to: emails,
-      from: `${shop.name} <${shop.emails[0].address}>`,
-      subject: `Reply to your comment on ${shop.name}`,
-      // todo html instead of text
-      // todo i18n
-      text: i18next.t("replyNotificationEmail.body")
-    });
-  } catch (error) {
-    throw new Meteor.Error(403, "Unable to send comment reply notification" +
-      " email.", error);
-  } finally {
-    ReactionCore.Log.info(`Trying to send comment reply notification mail to 
-      ${emails}`);
-  }
+  Object.keys(emails).forEach(shopId => {
+    const shop = ReactionCore.Collections.Shops.findOne(shopId);
+    if (!shop.emails[0].address) {
+      shop.emails[0].address = "no-reply@reactioncommerce.com";
+      ReactionCore.Log.warn("No shop email configured. Using no-reply to send mail");
+    }
+    // todo SSR.compileTemplate
+    // TODO how do we know which language we should use for email?
+    try {
+      Email.send({
+        to: emails[shopId],
+        from: `${shop.name} <${shop.emails[0].address}>`,
+        subject: i18next.t("comments.email.replyToYourComment", {
+          ns: "reaction-comments-core",
+          shopName: shop.name
+        }),
+        // subject: `Reply to your comment on ${shop.name}`,
+        // todo html instead of text
+        // todo i18n
+        text: i18next.t("replyNotificationEmail.body")
+      });
+    } catch (error) {
+      throw new Meteor.Error(403, "Unable to send comment reply notification email.",
+        error);
+    } finally {
+      ReactionCore.Log.info(`Trying to send comment reply notification mail to ${
+        emails[shopId]}`);
+    }
+  });
 };
 
 /**
  * @summary checks the list of comment"s ancestors to know if some of them
  * wants to know about new replies. Sends the email notification to all of them.
  * @param {Array} ancestorsIds - list of comment"s ancestors
+ * @fires `sendCommentReply`
+ * @return {Undefined}
  */
 const notifyAboutReply = ancestorsIds => {
-  const emails = [];
+  const emails = {};
   // get each comment in ancestors chain and check if his author want to
   // know about replies
   ancestorsIds.forEach((id) => {
-    const { userId, notify } = /*ReactionCore.Collections.*/Comments.findOne(
-      id
-    );
-    if(notify) {
-      const user = ReactionCore.Collections.Accounts.findOne(userId);
-      // anonymous users arent welcome here
-      if (!user.emails || !user.emails.length > 0) {
+    let email;
+    // for anonymous user we keep his email within comment document
+    const comment = /*ReactionCore.Collections.*/Comments.findOne(id);
+    if (typeof comment.email === "undefined") {
+      const user = ReactionCore.Collections.Accounts.findOne(comment.userId);
+      // double check. anonymous users aren't welcome here. Also, if author was
+      // anonymous - his account could be deleted. I suppose, this check could
+      // always be false
+      if (!user || user && !user.emails || !user.emails.length) {
         return;
       }
+      email = user.emails[0].address;
+    } else {
+      email = comment.email;
+    }
 
-      emails.push(user.emails[0].address);
+    // we need to split emails by `shopId`. In dashboard admin could approve
+    // several comments from different shops at one time.
+    if (!emails[comment.shopId]) {
+      emails[comment.shopId] = [];
+      emails[comment.shopId].push(email);
+    } else {
+      emails[comment.shopId].push(email);
     }
   });
 
-  if(emails.length) sendCommentReply(emails);
+  sendCommentReply(emails);
 };
 
 ReactionCore.MethodHooks.after("addComment", function (options) {
@@ -114,7 +136,6 @@ ReactionCore.MethodHooks.after("approveComments", function (options) {
     if (comment.ancestors.length) {
       // todo test this
       // toNotifyIds = _.union(toNotifyIds, comment.ancestors);
-      debugger;
       toNotifyIds = mergeUniq(toNotifyIds, comment.ancestors);
     }
   });
