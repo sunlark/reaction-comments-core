@@ -9,7 +9,7 @@ Npm.depends({
 });
 
 Package.onUse(function (api) {
-  api.versionsFrom("METEOR@1.3-rc.8");
+  api.versionsFrom("METEOR@1.3-rc.12");
   api.use("meteor-base");
   api.use("mongo");
   api.use("ecmascript");

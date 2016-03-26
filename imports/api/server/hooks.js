@@ -11,6 +11,7 @@ import { mergeUniq } from "../helpers";
  * @param {Array} emails
  */
 const sendCommentReply = emails => {
+  // FIXME: `order` is not belong to this hook
   const shop = ReactionCore.Collections.Shops.findOne(order.shopId);
   if (!shop.emails[0].address) {
     shop.emails[0].address = "no-reply@reactioncommerce.com";

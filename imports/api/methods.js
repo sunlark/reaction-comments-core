@@ -29,7 +29,7 @@ const commentValues = new SimpleSchema({
   },
   parentId: { type: String, optional: true },
   content: { type: Object, blackbox: true },
-  notify: { type: Boolean }
+  notify: { type: Boolean, optional: true }
 });
 
 /**
