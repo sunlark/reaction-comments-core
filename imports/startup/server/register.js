@@ -23,6 +23,14 @@ ReactionCore.registerPackage({
       permission: "manageComments"
     }]
   }, {
+    route: "/dashboard/comments",
+    name: "dashboard/comments",
+    workflow: "coreCommentsWorkflow",
+    provides: "shortcut",
+    label: "Comments",
+    icon: "fa fa-comments",
+    priority: 2
+  }, {
     label: "Comments Settings",
     route: "/dashboard/comments/settings",
     provides: "settings",
