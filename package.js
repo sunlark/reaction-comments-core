@@ -9,7 +9,7 @@ Npm.depends({
 });
 
 Package.onUse(function (api) {
-  api.versionsFrom("METEOR@1.3-rc.12");
+  api.versionsFrom("METEOR@1.3.1");
   api.use("meteor-base");
   api.use("mongo");
   api.use("ecmascript");
@@ -24,8 +24,8 @@ Package.onUse(function (api) {
   api.use("ddp-rate-limiter");
   api.use("underscore");
 
-  api.use("reactioncommerce:core@0.12.0");
-  api.use("reactioncommerce:reaction-schemas@2.0.3");
+  api.use("reactioncommerce:core@0.13.0");
+  api.use("reactioncommerce:reaction-schemas@2.0.5");
   api.mainModule("client/main.js", "client");
   api.mainModule("server/main.js", "server");
 
@@ -34,7 +34,7 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function (api) {
-  api.versionsFrom("METEOR@1.3-rc.4");
+  api.versionsFrom("METEOR@1.3.1");
   api.use("meteor-base");
   api.use("mongo");
   api.use("ecmascript");
@@ -48,7 +48,7 @@ Package.onTest(function (api) {
   api.use("practicalmeteor:mocha@2.1.1-rc.1");
   api.use("sunlark:reaction-comments-core");
   api.use("reactioncommerce:reaction-factories@0.4.2");
-  api.use("reactioncommerce:core@0.12.0");
+  api.use("reactioncommerce:core@0.13.0");
 
   api.mainModule("client/main.js", "client");
   api.mainModule("server/main.js", "server");
