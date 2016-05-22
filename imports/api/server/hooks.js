@@ -149,3 +149,12 @@ ReactionCore.MethodHooks.after("approveComments", function (options) {
 
   return options.result;
 });
+
+ReactionCore.MethodHooks.after("updateCommentsConfiguration", function (options) {
+  if (options.error) {
+    ReactionCore.Log.warn("Error changing comments moderation", options.error.reason);
+    return options.error;
+  }
+
+  return options.result;
+});

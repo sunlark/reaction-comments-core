@@ -1,15 +1,15 @@
 Package.describe({
   name: "sunlark:reaction-comments-core",
-  version: "0.0.1"
+  version: "0.0.2"
 });
 
 Npm.depends({
   // moment: "2.10.6"
-  i18next: "2.3.5"
+  i18next: "3.1.0"
 });
 
 Package.onUse(function (api) {
-  api.versionsFrom("METEOR@1.3.1");
+  api.versionsFrom("1.3.1");
   api.use("meteor-base");
   api.use("mongo");
   api.use("ecmascript");
